@@ -22,14 +22,17 @@ function AppContent() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
   const [shipData, setShipData] = useState<ShipData>({
+    vesselName: '',
+    daysAlongside: 0,
     loa: 0,
     beam: 0,
-    depth: 0,
+    depthMoulded: 0,
     nrt: 0,
     grt: 0,
-    draftEntry: 0,
-    draftExit: 0,
-    isArgentinePort: false
+    draftEntryCategory: 'Igual o menor a 8.53m (0%)',
+    draftExitCategory: 'Igual o menor a 8.53m (0%)',
+    isArgentineOrigin: false,
+    isArgentineDestination: false
   });
 
   const [calculation, setCalculation] = useState<PDACalculation | null>(null);
@@ -110,11 +113,14 @@ function AppContent() {
               <ShipForm
                 data={shipData}
                 onChange={setShipData}
+                exchangeRate={exchangeRate}
               />
 
               <PDAResult
                 calculation={calculation}
                 exchangeRate={exchangeRate}
+                shipData={shipData}
+                portName={selectedPort.name}
               />
             </>
           )}

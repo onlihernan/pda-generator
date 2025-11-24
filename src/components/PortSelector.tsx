@@ -22,7 +22,7 @@ export const PortSelector: React.FC<PortSelectorProps> = ({
             <h2 className="text-xl font-bold mb-4">Select Location</h2>
             <div className="grid grid-cols-2">
                 <div>
-                    <label className="label">City</label>
+                    <label className="label">Branch</label>
                     <select
                         value={selectedCity?.id || ''}
                         onChange={(e) => {
@@ -30,7 +30,7 @@ export const PortSelector: React.FC<PortSelectorProps> = ({
                             if (city) onCityChange(city);
                         }}
                     >
-                        <option value="" disabled>Select a city...</option>
+                        <option value="" disabled>Select a branch...</option>
                         {cities.map(city => (
                             <option key={city.id} value={city.id}>{city.name}</option>
                         ))}

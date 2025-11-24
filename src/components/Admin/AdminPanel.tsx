@@ -44,9 +44,9 @@ export const AdminPanel: React.FC = () => {
             <div className="card mb-4">
                 <div className="grid grid-cols-2">
                     <div>
-                        <label className="label">Select City</label>
+                        <label className="label">Select Branch</label>
                         <select value={selectedCityId} onChange={(e) => { setSelectedCityId(e.target.value); setSelectedPortId(''); }}>
-                            <option value="">Select City...</option>
+                            <option value="">Select Branch...</option>
                             {cities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </div>

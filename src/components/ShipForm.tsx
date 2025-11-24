@@ -1,80 +1,147 @@
 import React from 'react';
-import type { ShipData } from '../utils/calculator';
+import type { ShipData, DraftCategory } from '../utils/calculator';
+import { DRAFT_CATEGORIES } from '../utils/calculator';
+import type { ExchangeRate } from '../services/exchangeRate';
 
 interface ShipFormProps {
     data: ShipData;
     onChange: (data: ShipData) => void;
+    exchangeRate: ExchangeRate | null;
 }
 
-export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange }) => {
-    const handleChange = (field: keyof ShipData, value: string | boolean) => {
-        if (typeof value === 'boolean') {
-            onChange({ ...data, [field]: value });
-        } else {
-            onChange({ ...data, [field]: parseFloat(value) || 0 });
-        }
+export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate }) => {
+    const handleChange = (field: keyof ShipData, value: string | boolean | number) => {
+        onChange({ ...data, [field]: value });
     };
+
+    const currentDollarValue = data.manualExchangeRate || exchangeRate?.sell || 0;
 
     return (
         <div className="card fade-in" style={{ animationDelay: '0.1s' }}>
             <h2 className="text-xl font-bold mb-4">Vessel Particulars</h2>
             <div className="grid grid-cols-2">
+                {/* Row 1 */}
                 <div>
-                    <label className="label">LOA (Eslora) [m]</label>
+                    <label className="label">Vessel Name</label>
+                    <input
+                        type="text"
+                        value={data.vesselName || ''}
+                        onChange={(e) => handleChange('vesselName', e.target.value)}
+                        placeholder="e.g. MV GLORIOUS"
+                    />
+                </div>
+                <div>
+                    <label className="label">Days Alongside</label>
+                    <input
+                        type="number"
+                        value={data.daysAlongside || ''}
+                        onChange={(e) => handleChange('daysAlongside', parseFloat(e.target.value) || 0)}
+                        placeholder="e.g. 2"
+                    />
+                </div>
+
+                {/* Row 2 */}
+                <div>
+                    <label className="label">LOA [m]</label>
                     <input
                         type="number"
                         step="0.01"
                         value={data.loa || ''}
-                        onChange={(e) => handleChange('loa', e.target.value)}
+                        onChange={(e) => handleChange('loa', parseFloat(e.target.value) || 0)}
                         placeholder="e.g. 225.00"
                     />
                 </div>
                 <div>
-                    <label className="label">Beam (Manga) [m]</label>
+                    <label className="label">Beam [m]</label>
                     <input
                         type="number"
                         step="0.01"
                         value={data.beam || ''}
-                        onChange={(e) => handleChange('beam', e.target.value)}
+                        onChange={(e) => handleChange('beam', parseFloat(e.target.value) || 0)}
                         placeholder="e.g. 32.20"
                     />
                 </div>
+
+                {/* Row 3 */}
                 <div>
-                    <label className="label">Depth (Puntal) [m]</label>
+                    <label className="label">Depth Moulded [m]</label>
                     <input
                         type="number"
                         step="0.01"
-                        value={data.depth || ''}
-                        onChange={(e) => handleChange('depth', e.target.value)}
+                        value={data.depthMoulded || ''}
+                        onChange={(e) => handleChange('depthMoulded', parseFloat(e.target.value) || 0)}
                         placeholder="e.g. 19.50"
                     />
                 </div>
                 <div>
-                    <label className="label">NRT (TRN)</label>
+                    <label className="label">Net Tonnage (TRN)</label>
                     <input
                         type="number"
                         value={data.nrt || ''}
-                        onChange={(e) => handleChange('nrt', e.target.value)}
+                        onChange={(e) => handleChange('nrt', parseFloat(e.target.value) || 0)}
                         placeholder="e.g. 25000"
                     />
                 </div>
+
+                {/* Row 4 */}
                 <div>
-                    <label className="label">GRT (TRB)</label>
+                    <label className="label">Gross Tonnage (TRB)</label>
                     <input
                         type="number"
                         value={data.grt || ''}
-                        onChange={(e) => handleChange('grt', e.target.value)}
+                        onChange={(e) => handleChange('grt', parseFloat(e.target.value) || 0)}
                         placeholder="e.g. 45000"
                     />
                 </div>
                 <div>
-                    <label className="label">Origin/Dest</label>
+                    <label className="label">Today's Dollar Value</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        value={currentDollarValue || ''}
+                        onChange={(e) => handleChange('manualExchangeRate', parseFloat(e.target.value) || 0)}
+                        placeholder="BCRA Dollar"
+                    />
+                    {exchangeRate && !data.manualExchangeRate && (
+                        <div style={{ fontSize: '0.8em', color: 'var(--color-text-muted)', marginTop: '0.2em' }}>
+                            Auto-fetched: {exchangeRate.sell}
+                        </div>
+                    )}
+                </div>
+
+                {/* Row 5 - Drafts */}
+                <div>
+                    <label className="label">Arrival Draft</label>
+                    <select
+                        value={data.draftEntryCategory}
+                        onChange={(e) => handleChange('draftEntryCategory', e.target.value as DraftCategory)}
+                    >
+                        {DRAFT_CATEGORIES.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label className="label">Departure Draft</label>
+                    <select
+                        value={data.draftExitCategory}
+                        onChange={(e) => handleChange('draftExitCategory', e.target.value as DraftCategory)}
+                    >
+                        {DRAFT_CATEGORIES.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Row 6 - Origin/Dest */}
+                <div>
+                    <label className="label">Origin</label>
                     <div style={{ display: 'flex', alignItems: 'center', height: '42px' }}>
                         <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                             <input
                                 type="checkbox"
-                                checked={data.isArgentinePort}
-                                onChange={(e) => handleChange('isArgentinePort', e.target.checked)}
+                                checked={data.isArgentineOrigin}
+                                onChange={(e) => handleChange('isArgentineOrigin', e.target.checked)}
                                 style={{ width: 'auto', marginRight: '0.5em' }}
                             />
                             Argentine Port
@@ -82,24 +149,18 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange }) => {
                     </div>
                 </div>
                 <div>
-                    <label className="label">Draft Entry (Calado) [m]</label>
-                    <input
-                        type="number"
-                        step="0.01"
-                        value={data.draftEntry || ''}
-                        onChange={(e) => handleChange('draftEntry', e.target.value)}
-                        placeholder="e.g. 10.50"
-                    />
-                </div>
-                <div>
-                    <label className="label">Draft Exit (Calado) [m]</label>
-                    <input
-                        type="number"
-                        step="0.01"
-                        value={data.draftExit || ''}
-                        onChange={(e) => handleChange('draftExit', e.target.value)}
-                        placeholder="e.g. 11.00"
-                    />
+                    <label className="label">Destination</label>
+                    <div style={{ display: 'flex', alignItems: 'center', height: '42px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                            <input
+                                type="checkbox"
+                                checked={data.isArgentineDestination}
+                                onChange={(e) => handleChange('isArgentineDestination', e.target.checked)}
+                                style={{ width: 'auto', marginRight: '0.5em' }}
+                            />
+                            Argentine Port
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

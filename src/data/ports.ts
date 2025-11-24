@@ -69,5 +69,70 @@ export const CITIES: City[] = [
                 ]
             }
         ]
+    },
+    {
+        id: 'san-nicolas',
+        name: 'San Nicolás',
+        ports: []
+    },
+    {
+        id: 'campana',
+        name: 'Campana',
+        ports: [
+            { id: 'san-pedro', name: 'San Pedro', tariffs: [] },
+            { id: 'delta-dock', name: 'Delta Dock', tariffs: [] },
+            { id: 'las-palmas', name: 'Las Palmas', tariffs: [] },
+            { id: 'vitco', name: 'Vitco', tariffs: [] },
+            { id: 'del-guazu', name: 'Del Guazu', tariffs: [] },
+            { id: 'siderca', name: 'Siderca', tariffs: [] },
+            { id: 'pan-american-energy', name: 'Pan American Energy', tariffs: [] },
+            { id: 'carboclor', name: 'Carboclor', tariffs: [] },
+            { id: 'euroamerica-maripasa', name: 'Euroamerica/Maripasa', tariffs: [] },
+        ]
+    },
+    {
+        id: 'necochea',
+        name: 'Necochea',
+        ports: []
+    },
+    {
+        id: 'bahia-blanca',
+        name: 'Bahía Blanca',
+        ports: []
+    },
+    {
+        id: 'ushuaia',
+        name: 'Ushuaia',
+        ports: []
+    },
+    {
+        id: 'puerto-madryn',
+        name: 'Puerto Madryn',
+        ports: []
+    },
+    {
+        id: 'nueva-palmira-uru',
+        name: 'Nueva Palmira (URU)',
+        ports: []
+    },
+    {
+        id: 'montevideo-uru',
+        name: 'Montevideo (URU)',
+        ports: []
+    },
+    {
+        id: 'asuncion-par',
+        name: 'Asunción (PAR)',
+        ports: []
+    },
+    {
+        id: 'corumba-bra',
+        name: 'Corumba (BRA)',
+        ports: []
+    },
+    {
+        id: 'quijarro-bol',
+        name: 'Quijarro (BOL)',
+        ports: []
     }
 ];
