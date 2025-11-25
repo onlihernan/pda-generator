@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import type { TariffRule } from '../../data/ports';
+import { ParameterEditor } from './ParameterEditor';
+
+type AdminTab = 'tariffs' | 'parameters';
 
 export const AdminPanel: React.FC = () => {
-    const { cities, updateTariff, addTariff, deleteTariff, resetData } = useData();
+    const { cities, updateTariff, addTariff, deleteTariff, resetData, getPortParameters, updatePortParameters, resetPortParameters } = useData();
     const { logout } = useAuth();
 
+    const [activeTab, setActiveTab] = useState<AdminTab>('parameters');
     const [selectedCityId, setSelectedCityId] = useState<string>('');
     const [selectedPortId, setSelectedPortId] = useState<string>('');
     const [editingTariff, setEditingTariff] = useState<{ index: number, rule: TariffRule } | null>(null);
@@ -29,18 +33,64 @@ export const AdminPanel: React.FC = () => {
         }
     };
 
+    const handleParameterUpdate = (params: any) => {
+        if (selectedCity && selectedPort) {
+            updatePortParameters(selectedCity.id, selectedPort.id, params);
+        }
+    };
+
+    const handleParameterReset = () => {
+        if (selectedCity && selectedPort) {
+            if (confirm(`Reset all parameters for ${selectedPort.name} to defaults?`)) {
+                resetPortParameters(selectedCity.id, selectedPort.id);
+            }
+        }
+    };
+
     const emptyRule: TariffRule = { item: '', unit: 'TRN', price: 0, currency: 'USD', description: '' };
 
     return (
         <div className="fade-in">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 className="text-xl font-bold">Tariff Management</h2>
+                <h2 className="text-xl font-bold">Admin Panel</h2>
                 <div>
-                    <button onClick={resetData} style={{ marginRight: '1rem', backgroundColor: '#ef4444' }}>Reset Defaults</button>
+                    <button onClick={resetData} style={{ marginRight: '1rem', backgroundColor: '#ef4444' }}>Reset All Defaults</button>
                     <button onClick={logout} style={{ backgroundColor: 'transparent', border: '1px solid var(--color-border)' }}>Logout</button>
                 </div>
             </div>
 
+            {/* Tabs */}
+            <div style={{ marginBottom: '1.5rem', borderBottom: '2px solid var(--color-border)' }}>
+                <button
+                    onClick={() => setActiveTab('parameters')}
+                    style={{
+                        padding: '0.7em 1.5em',
+                        marginRight: '0.5em',
+                        backgroundColor: activeTab === 'parameters' ? 'var(--color-primary)' : 'transparent',
+                        color: activeTab === 'parameters' ? 'white' : 'var(--color-text)',
+                        border: 'none',
+                        borderRadius: '8px 8px 0 0',
+                        fontWeight: activeTab === 'parameters' ? 'bold' : 'normal'
+                    }}
+                >
+                    Port Parameters
+                </button>
+                <button
+                    onClick={() => setActiveTab('tariffs')}
+                    style={{
+                        padding: '0.7em 1.5em',
+                        backgroundColor: activeTab === 'tariffs' ? 'var(--color-primary)' : 'transparent',
+                        color: activeTab === 'tariffs' ? 'white' : 'var(--color-text)',
+                        border: 'none',
+                        borderRadius: '8px 8px 0 0',
+                        fontWeight: activeTab === 'tariffs' ? 'bold' : 'normal'
+                    }}
+                >
+                    Tariff Rules
+                </button>
+            </div>
+
+            {/* Port Selection */}
             <div className="card mb-4">
                 <div className="grid grid-cols-2">
                     <div>
@@ -60,7 +110,19 @@ export const AdminPanel: React.FC = () => {
                 </div>
             </div>
 
-            {selectedPort && (
+            {/* Parameters Tab */}
+            {activeTab === 'parameters' && selectedPort && (
+                <ParameterEditor
+                    portId={selectedPort.id}
+                    portName={selectedPort.name}
+                    parameters={getPortParameters(selectedPort.id)}
+                    onUpdate={handleParameterUpdate}
+                    onReset={handleParameterReset}
+                />
+            )}
+
+            {/* Tariffs Tab */}
+            {activeTab === 'tariffs' && selectedPort && (
                 <div className="card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <h3 className="font-bold text-lg">Tariffs for {selectedPort.name}</h3>

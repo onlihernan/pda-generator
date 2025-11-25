@@ -13,7 +13,7 @@ import { getUSDRate } from './services/exchangeRate';
 import type { ExchangeRate } from './services/exchangeRate';
 
 function AppContent() {
-  const { cities } = useData();
+  const { cities, getPortParameters } = useData();
   const { isAuthenticated } = useAuth();
 
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
@@ -47,12 +47,14 @@ function AppContent() {
 
   useEffect(() => {
     if (selectedPort && shipData.nrt > 0) {
-      const result = calculatePDA(selectedPort.tariffs, shipData);
+      const rate = shipData.manualExchangeRate || exchangeRate?.sell;
+      const params = getPortParameters(selectedPort.id);
+      const result = calculatePDA(selectedPort.id, shipData, rate, params);
       setCalculation(result);
     } else {
       setCalculation(null);
     }
-  }, [selectedPort, shipData]);
+  }, [selectedPort, shipData, exchangeRate, getPortParameters]);
 
   // Reset selection if cities data changes (e.g. after admin update)
   useEffect(() => {
@@ -90,7 +92,7 @@ function AppContent() {
     <div className="min-h-screen">
       <header style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative' }}>
         <h1>PDA Generator</h1>
-        <p className="text-muted">Proforma Disbursement Account Calculator for Argentine Ports</p>
+        <p className="text-muted">Proforma Disbursement Account Calculator</p>
         <button
           onClick={() => setShowAdminLogin(true)}
           style={{ position: 'absolute', top: 0, right: 0, fontSize: '0.8em', padding: '0.4em 0.8em', backgroundColor: 'transparent', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}
@@ -114,6 +116,8 @@ function AppContent() {
                 data={shipData}
                 onChange={setShipData}
                 exchangeRate={exchangeRate}
+                selectedPort={selectedPort}
+                selectedCity={selectedCity}
               />
 
               <PDAResult

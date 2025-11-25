@@ -15,42 +15,39 @@ export const PDAResult: React.FC<PDAResultProps> = ({ calculation, exchangeRate,
 
     useEffect(() => {
         if (calculation) {
-            const dateStr = new Date().toLocaleDateString();
-            // Use manual rate if provided, otherwise fetch rate, otherwise 0
-            const currentRate = shipData.manualExchangeRate || exchangeRate?.sell || 0;
-            const rateStr = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'ARS' }).format(currentRate);
 
-            const text = `PROFORMA DISBURSEMENT ACCOUNT (ESTIMATION)
+            const safePortName = portName || '';
+            const isSanPedro = safePortName.toLowerCase().includes('san pedro');
+            const vesselName = (shipData.vesselName || 'N/A').toUpperCase();
+
+            // Format: VESSEL – PORT – DAYS days along:
+            const header = `${vesselName} – ${safePortName.toUpperCase()} – ${shipData.daysAlongside} days along:`;
+
+            let text = `PROFORMA DISBURSEMENT ACCOUNT (ESTIMATION)
 ------------------------------------------
-Port: ${portName}
-Date: ${dateStr}
 
-VESSEL PARTICULARS
-------------------
-Vessel Name: ${shipData.vesselName || 'N/A'}
-Days Alongside: ${shipData.daysAlongside}
-LOA: ${shipData.loa} m
-Beam: ${shipData.beam} m
-Depth Moulded: ${shipData.depthMoulded} m
-NRT: ${shipData.nrt}
-GRT: ${shipData.grt}
-
-Arrival Draft: ${shipData.draftEntryCategory}
-Departure Draft: ${shipData.draftExitCategory}
-
-Origin: ${shipData.isArgentineOrigin ? 'Argentine Port' : 'Foreign Port'}
-Destination: ${shipData.isArgentineDestination ? 'Argentine Port' : 'Foreign Port'}
-
-ESTIMATED COSTS (USD)
+${header}
 ---------------------
-${calculation.items.map(item => `${item.name.padEnd(30)}: $${item.amountUSD.toFixed(2)}`).join('\n')}
+${calculation.items.map(item => {
+                const amountStr = item.customDisplayValue || `usd ${Math.ceil(item.amountUSD)}`;
+                return `${item.name.padEnd(30)}: ${amountStr}`;
+            }).join('\n')}
 ---------------------
-TOTAL ESTIMATED               : $${calculation.totalUSD.toFixed(2)}
+TOTAL ESTIMATED               : usd ${Math.ceil(calculation.totalUSD)}
 
-Exchange Rate used: ${rateStr} / USD
 ------------------------------------------
 * This is an estimation. Actual costs may vary.
 `;
+
+            if (isSanPedro) {
+                text += `
+Take into account Customs authorization for vessel stay in case the ship does not operate during OT: USD 300–350 per shift.
+(*) Port safety dues will be increased depending on the vessel’s total stay.
+(**) Remember that pilots recommend not exceeding 200 meters LOA.
+`;
+            }
+
+            console.log('Generated Email Text:', text);
             setGeneratedText(text);
         }
     }, [calculation, exchangeRate, shipData, portName]);
@@ -104,12 +101,14 @@ Exchange Rate used: ${rateStr} / USD
                     {calculation.items.map((item, index) => (
                         <tr key={index}>
                             <td>{item.name}</td>
-                            <td style={{ textAlign: 'right' }}>{formatCurrency(item.amountUSD, 'USD')}</td>
+                            <td style={{ textAlign: 'right' }}>
+                                {item.customDisplayValue || `$${Math.ceil(item.amountUSD)}`}
+                            </td>
                         </tr>
                     ))}
                     <tr className="total-row">
                         <td style={{ textAlign: 'right' }}>TOTAL</td>
-                        <td style={{ textAlign: 'right' }}>{formatCurrency(calculation.totalUSD, 'USD')}</td>
+                        <td style={{ textAlign: 'right' }}>${Math.ceil(calculation.totalUSD)}</td>
                     </tr>
                 </tbody>
             </table>

@@ -1,3 +1,5 @@
+import type { PortParameters } from './portParameters';
+
 export interface TariffRule {
     item: string;
     unit: 'TRN' | 'TRB' | 'LOA' | 'FIXED' | 'DRAFT';
@@ -10,6 +12,7 @@ export interface Port {
     id: string;
     name: string;
     tariffs: TariffRule[];
+    parameters?: PortParameters;
 }
 
 export interface City {

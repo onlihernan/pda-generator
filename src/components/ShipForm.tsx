@@ -2,19 +2,24 @@ import React from 'react';
 import type { ShipData, DraftCategory } from '../utils/calculator';
 import { DRAFT_CATEGORIES } from '../utils/calculator';
 import type { ExchangeRate } from '../services/exchangeRate';
+import type { City, Port } from '../data/ports';
 
 interface ShipFormProps {
     data: ShipData;
     onChange: (data: ShipData) => void;
     exchangeRate: ExchangeRate | null;
+    selectedPort: Port | null;
+    selectedCity: City | null;
 }
 
-export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate }) => {
+export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate, selectedPort, selectedCity }) => {
     const handleChange = (field: keyof ShipData, value: string | boolean | number) => {
         onChange({ ...data, [field]: value });
     };
 
     const currentDollarValue = data.manualExchangeRate || exchangeRate?.sell || 0;
+    const isSanPedroCampana = selectedCity?.id === 'campana' && selectedPort?.id === 'san-pedro';
+    const isDelGuazu = selectedPort?.id === 'del-guazu';
 
     return (
         <div className="card fade-in" style={{ animationDelay: '0.1s' }}>
@@ -26,7 +31,7 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate
                     <input
                         type="text"
                         value={data.vesselName || ''}
-                        onChange={(e) => handleChange('vesselName', e.target.value)}
+                        onChange={(e) => handleChange('vesselName', e.target.value.toUpperCase())}
                         placeholder="e.g. MV GLORIOUS"
                     />
                 </div>
@@ -84,32 +89,55 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate
                 </div>
 
                 {/* Row 4 */}
-                <div>
-                    <label className="label">Gross Tonnage (TRB)</label>
-                    <input
-                        type="number"
-                        value={data.grt || ''}
-                        onChange={(e) => handleChange('grt', parseFloat(e.target.value) || 0)}
-                        placeholder="e.g. 45000"
-                    />
-                </div>
-                <div>
-                    <label className="label">Today's Dollar Value</label>
-                    <input
-                        type="number"
-                        step="0.01"
-                        value={currentDollarValue || ''}
-                        onChange={(e) => handleChange('manualExchangeRate', parseFloat(e.target.value) || 0)}
-                        placeholder="BCRA Dollar"
-                    />
-                    {exchangeRate && !data.manualExchangeRate && (
+                {isSanPedroCampana ? (
+                    <div>
+                        <label className="label">Gross Tonnage (TRB)</label>
+                        <input
+                            type="number"
+                            value={data.grt || ''}
+                            onChange={(e) => handleChange('grt', parseFloat(e.target.value) || 0)}
+                            placeholder="e.g. 45000"
+                        />
+                    </div>
+                ) : (
+                    <div style={{ visibility: 'hidden' }}></div>
+                )}
+                {isSanPedroCampana ? (
+                    <div>
+                        <label className="label">Today's Dollar Value</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={currentDollarValue || ''}
+                            onChange={(e) => handleChange('manualExchangeRate', parseFloat(e.target.value) || 0)}
+                            placeholder="BCRA Dollar"
+                        />
                         <div style={{ fontSize: '0.8em', color: 'var(--color-text-muted)', marginTop: '0.2em' }}>
-                            Auto-fetched: {exchangeRate.sell}
+                            Current date: {new Date().toLocaleDateString('es-AR')}
                         </div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <div style={{ visibility: 'hidden' }}></div>
+                )}
 
-                {/* Row 5 - Drafts */}
+                {/* Row 5 - Vessel Type (conditional for Del Guazu) */}
+                {isDelGuazu && (
+                    <>
+                        <div>
+                            <label className="label">Vessel Type</label>
+                            <select
+                                value={data.vesselType || 'bulker'}
+                                onChange={(e) => handleChange('vesselType', e.target.value)}
+                            >
+                                <option value="bulker">Bulker</option>
+                                <option value="tanker">Tanker</option>
+                            </select>
+                        </div>
+                        <div style={{ visibility: 'hidden' }}></div>
+                    </>
+                )}
+
+                {/* Row 6 - Drafts */}
                 <div>
                     <label className="label">Arrival Draft</label>
                     <select
@@ -133,7 +161,7 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate
                     </select>
                 </div>
 
-                {/* Row 6 - Origin/Dest */}
+                {/* Row 7 - Origin/Dest */}
                 <div>
                     <label className="label">Origin</label>
                     <div style={{ display: 'flex', alignItems: 'center', height: '42px' }}>
