@@ -38,7 +38,9 @@ ${header}
 ---------------------
 ${calculation.items.map(item => {
                 const amountStr = item.customDisplayValue || `usd ${Math.ceil(item.amountUSD)}`;
-                return `${item.name.padEnd(30)}: ${amountStr}`;
+                const itemLine = `${item.name.padEnd(30)}: ${amountStr}`;
+                // Add description on next line if it exists
+                return item.description ? `${itemLine}\n${' '.repeat(32)}(${item.description})` : itemLine;
             }).join('\n')}
 ---------------------
 TOTAL ESTIMATED               : usd ${Math.ceil(calculation.totalUSD)}
@@ -57,7 +59,7 @@ Take into account Customs authorization for vessel stay in case the ship does no
 
             if (isDeltaDock || isLasPalmas) {
                 text += `
-In case of no operation during OT, authorization must be enabled, usd 350/shift.
+If no operation takes place during overtime, a permanence charge of USD 350 per shift will apply.
 `;
             }
 
