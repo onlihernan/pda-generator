@@ -38,9 +38,8 @@ ${header}
 ---------------------
 ${calculation.items.map(item => {
                 const amountStr = item.customDisplayValue || `usd ${Math.ceil(item.amountUSD)}`;
-                const itemLine = `${item.name.padEnd(30)}: ${amountStr}`;
-                // Add description on next line if it exists
-                return item.description ? `${itemLine}\n${' '.repeat(32)}(${item.description})` : itemLine;
+                const descriptionStr = item.description ? ` (${item.description})` : '';
+                return `${item.name.padEnd(30)}: ${amountStr}${descriptionStr}`;
             }).join('\n')}
 ---------------------
 TOTAL ESTIMATED               : usd ${Math.ceil(calculation.totalUSD)}
