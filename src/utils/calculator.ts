@@ -33,6 +33,7 @@ export interface ShipData {
     isArgentineDestination: boolean;
     vesselType?: VesselType;
     manualExchangeRate?: number;
+    terminalName?: 'EUROAMERICA' | 'MARIPASA' | 'EUROAMERICA/MARIPASA';
 }
 
 export interface CostItem {
@@ -249,7 +250,7 @@ function calculatePanAmericanEnergy(ship: ShipData, params: PortParameters): PDA
     const arrDraftPct = getDraftPercentage(ship.draftEntryCategory);
     const depDraftPct = getDraftPercentage(ship.draftExitCategory);
 
-    items.push({ name: 'Port dues', amountUSD: 0, description: 'N/A' });
+    items.push({ name: 'Port dues', amountUSD: 0, description: 'N/A', customDisplayValue: 'N/A' });
     items.push({ name: 'Light dues', amountUSD: Math.ceil(ship.nrt * (params.lightDuesRate ?? 0.058)) });
     items.push({
         name: 'Port Pilot',
@@ -276,8 +277,8 @@ function calculateSiderca(ship: ShipData, params: PortParameters): PDACalculatio
     const arrDraftPct = getDraftPercentage(ship.draftEntryCategory);
     const depDraftPct = getDraftPercentage(ship.draftExitCategory);
 
-    items.push({ name: 'Port dues', amountUSD: 0, description: 'N/A' });
-    items.push({ name: 'ISPS Charge', amountUSD: 0, description: 'N/A' });
+    items.push({ name: 'Port dues', amountUSD: 0, description: 'N/A', customDisplayValue: 'N/A' });
+    items.push({ name: 'ISPS Charge', amountUSD: 0, description: 'N/A', customDisplayValue: 'N/A' });
     items.push({ name: 'Light dues', amountUSD: Math.ceil(ship.nrt * (params.lightDuesRate ?? 0.058)) });
     items.push({
         name: 'Port Pilot',

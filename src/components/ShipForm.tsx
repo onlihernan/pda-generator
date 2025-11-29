@@ -20,6 +20,7 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate
     const currentDollarValue = data.manualExchangeRate || exchangeRate?.sell || 0;
     const isSanPedroCampana = selectedCity?.id === 'campana' && selectedPort?.id === 'san-pedro';
     const isDelGuazu = selectedPort?.id === 'del-guazu';
+    const isEuroamericaMaripasa = selectedPort?.id === 'euroamerica-maripasa';
 
     return (
         <div className="card fade-in" style={{ animationDelay: '0.1s' }}>
@@ -131,6 +132,24 @@ export const ShipForm: React.FC<ShipFormProps> = ({ data, onChange, exchangeRate
                             >
                                 <option value="bulker">Bulker</option>
                                 <option value="tanker">Tanker</option>
+                            </select>
+                        </div>
+                        <div style={{ visibility: 'hidden' }}></div>
+                    </>
+                )}
+
+                {/* Row 5B - Terminal Name (conditional for Euroamerica/Maripasa) */}
+                {isEuroamericaMaripasa && (
+                    <>
+                        <div>
+                            <label className="label">Terminal Name</label>
+                            <select
+                                value={data.terminalName || 'EUROAMERICA/MARIPASA'}
+                                onChange={(e) => handleChange('terminalName', e.target.value)}
+                            >
+                                <option value="EUROAMERICA">EUROAMERICA</option>
+                                <option value="MARIPASA">MARIPASA</option>
+                                <option value="EUROAMERICA/MARIPASA">EUROAMERICA/MARIPASA</option>
                             </select>
                         </div>
                         <div style={{ visibility: 'hidden' }}></div>

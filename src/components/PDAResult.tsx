@@ -18,10 +18,18 @@ export const PDAResult: React.FC<PDAResultProps> = ({ calculation, exchangeRate,
 
             const safePortName = portName || '';
             const isSanPedro = safePortName.toLowerCase().includes('san pedro');
+            const isDeltaDock = safePortName.toLowerCase().includes('delta dock');
+            const isLasPalmas = safePortName.toLowerCase().includes('las palmas');
+            const isEuroamericaMaripasa = safePortName.toLowerCase().includes('euroamerica') || safePortName.toLowerCase().includes('maripasa');
             const vesselName = (shipData.vesselName || 'N/A').toUpperCase();
 
+            // Use terminal name for Euroamerica/Maripasa if specified
+            const displayPortName = (isEuroamericaMaripasa && shipData.terminalName)
+                ? shipData.terminalName
+                : safePortName.toUpperCase();
+
             // Format: VESSEL – PORT – DAYS days along:
-            const header = `${vesselName} – ${safePortName.toUpperCase()} – ${shipData.daysAlongside} days along:`;
+            const header = `${vesselName} – ${displayPortName} – ${shipData.daysAlongside} days along:`;
 
             let text = `PROFORMA DISBURSEMENT ACCOUNT (ESTIMATION)
 ------------------------------------------
@@ -42,8 +50,14 @@ TOTAL ESTIMATED               : usd ${Math.ceil(calculation.totalUSD)}
             if (isSanPedro) {
                 text += `
 Take into account Customs authorization for vessel stay in case the ship does not operate during OT: USD 300–350 per shift.
-(*) Port safety dues will be increased depending on the vessel’s total stay.
+(*) Port safety dues will be increased depending on the vessel's total stay.
 (**) Remember that pilots recommend not exceeding 200 meters LOA.
+`;
+            }
+
+            if (isDeltaDock || isLasPalmas) {
+                text += `
+In case of no operation during OT, authorization must be enabled, usd 350/shift.
 `;
             }
 
