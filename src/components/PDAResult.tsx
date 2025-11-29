@@ -87,7 +87,7 @@ If no operation takes place during overtime, a permanence charge of USD 350 per 
     return (
         <div className="card fade-in" style={{ animationDelay: '0.2s', borderColor: 'var(--color-accent)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h2 className="text-xl font-bold" style={{ margin: 0 }}>PDA Result</h2>
+                <h2 className="text-xl font-bold" style={{ margin: 0 }}>Email Format (Text)</h2>
                 <button
                     onClick={handleCopy}
                     style={{
@@ -99,38 +99,8 @@ If no operation takes place during overtime, a permanence charge of USD 350 per 
                 </button>
             </div>
 
-            <div style={{ marginBottom: '1rem', padding: '0.5rem', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderRadius: 'var(--radius-md)' }}>
-                <span className="text-sm text-muted">Exchange Rate used: </span>
-                <strong>{formatCurrency(currentRate, 'ARS')} / USD</strong>
-            </div>
-
-            {/* Visual Table for Quick View */}
-            <table className="table" style={{ marginBottom: '1.5rem' }}>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th style={{ textAlign: 'right' }}>Amount (USD)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {calculation.items.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.name}</td>
-                            <td style={{ textAlign: 'right' }}>
-                                {item.customDisplayValue || `$${Math.ceil(item.amountUSD)}`}
-                            </td>
-                        </tr>
-                    ))}
-                    <tr className="total-row">
-                        <td style={{ textAlign: 'right' }}>TOTAL</td>
-                        <td style={{ textAlign: 'right' }}>${Math.ceil(calculation.totalUSD)}</td>
-                    </tr>
-                </tbody>
-            </table>
-
             {/* Text Area for Manual Copying */}
             <div>
-                <label className="label">Email Format (Text)</label>
                 <textarea
                     readOnly
                     value={generatedText}
