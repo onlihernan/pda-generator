@@ -11,7 +11,7 @@ Error generating stack: `+a.message+`
 
 ${`${q} – ${B} – ${y.daysAlongside} days along:`}
 ---------------------
-${f.items.map(ct=>{const I=ct.customDisplayValue||`usd ${Math.ceil(ct.amountUSD)}`,it=ct.description?` (${ct.description})`:"";return`${ct.name.padEnd(30)}: ${I}${it}`}).join(`
+${f.items.map(ct=>{const I=ct.customDisplayValue||`usd ${Math.ceil(ct.amountUSD)}`,it=!ct.customDisplayValue&&ct.description?` (${ct.description})`:"";return`${ct.name.padEnd(30)}: ${I}${it}`}).join(`
 `)}
 ---------------------
 TOTAL ESTIMATED               : usd ${Math.ceil(f.totalUSD)}
