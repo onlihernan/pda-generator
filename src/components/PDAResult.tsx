@@ -75,15 +75,6 @@ If no operation takes place during overtime, a permanence charge of USD 350 per 
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const formatCurrency = (amount: number, currency: string) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: currency,
-        }).format(amount);
-    };
-
-    const currentRate = shipData.manualExchangeRate || exchangeRate?.sell || 0;
-
     return (
         <div className="card fade-in" style={{ animationDelay: '0.2s', borderColor: 'var(--color-accent)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
