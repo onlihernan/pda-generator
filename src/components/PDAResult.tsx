@@ -38,7 +38,8 @@ ${header}
 ---------------------
 ${calculation.items.map(item => {
                 const amountStr = item.customDisplayValue || `usd ${Math.ceil(item.amountUSD)}`;
-                const descriptionStr = item.description ? ` (${item.description})` : '';
+                // Only add description if customDisplayValue is not used
+                const descriptionStr = (!item.customDisplayValue && item.description) ? ` (${item.description})` : '';
                 return `${item.name.padEnd(30)}: ${amountStr}${descriptionStr}`;
             }).join('\n')}
 ---------------------
