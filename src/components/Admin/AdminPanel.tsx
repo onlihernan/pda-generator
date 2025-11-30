@@ -8,7 +8,12 @@ type AdminTab = 'tariffs' | 'parameters';
 
 export const AdminPanel: React.FC = () => {
     const { cities, updateTariff, addTariff, deleteTariff, resetData, getPortParameters, updatePortParameters, resetPortParameters } = useData();
-    const { logout } = useAuth();
+    const { logout, currentUser } = useAuth();
+
+    // Filter cities based on user's branch
+    const filteredCities = currentUser?.branchId
+        ? cities.filter(city => city.id === currentUser.branchId)
+        : cities;
 
     const [activeTab, setActiveTab] = useState<AdminTab>('parameters');
     const [selectedCityId, setSelectedCityId] = useState<string>('');
@@ -16,7 +21,7 @@ export const AdminPanel: React.FC = () => {
     const [editingTariff, setEditingTariff] = useState<{ index: number, rule: TariffRule } | null>(null);
     const [isAdding, setIsAdding] = useState(false);
 
-    const selectedCity = cities.find(c => c.id === selectedCityId);
+    const selectedCity = filteredCities.find(c => c.id === selectedCityId);
     const selectedPort = selectedCity?.ports.find(p => p.id === selectedPortId);
 
     const handleSave = () => {
@@ -52,7 +57,14 @@ export const AdminPanel: React.FC = () => {
     return (
         <div className="fade-in">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 className="text-xl font-bold">Admin Panel</h2>
+                <div>
+                    <h2 className="text-xl font-bold">Admin Panel</h2>
+                    {currentUser && (
+                        <p className="text-sm text-muted" style={{ marginTop: '0.3rem' }}>
+                            Logged in as: <strong>{currentUser.displayName}</strong> {currentUser.role === 'super-admin' && '(Full Access)'}
+                        </p>
+                    )}
+                </div>
                 <div>
                     <button onClick={resetData} style={{ marginRight: '1rem', backgroundColor: '#ef4444' }}>Reset All Defaults</button>
                     <button onClick={logout} style={{ backgroundColor: 'transparent', border: '1px solid var(--color-border)' }}>Logout</button>
@@ -97,7 +109,7 @@ export const AdminPanel: React.FC = () => {
                         <label className="label">Select Branch</label>
                         <select value={selectedCityId} onChange={(e) => { setSelectedCityId(e.target.value); setSelectedPortId(''); }}>
                             <option value="">Select Branch...</option>
-                            {cities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            {filteredCities.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </div>
                     <div>
