@@ -39,11 +39,81 @@ export const USERS: User[] = [
         displayName: 'Buenos Aires'
     },
     {
+        username: 'sannicolas',
+        password: 'sn2024',
+        branchId: 'san-nicolas',
+        role: 'branch-admin',
+        displayName: 'San Nicolás'
+    },
+    {
         username: 'campana',
         password: 'camp2024',
         branchId: 'campana',
         role: 'branch-admin',
         displayName: 'Campana'
+    },
+    {
+        username: 'necochea',
+        password: 'nec2024',
+        branchId: 'necochea',
+        role: 'branch-admin',
+        displayName: 'Necochea'
+    },
+    {
+        username: 'bahiablanca',
+        password: 'bb2024',
+        branchId: 'bahia-blanca',
+        role: 'branch-admin',
+        displayName: 'Bahía Blanca'
+    },
+    {
+        username: 'ushuaia',
+        password: 'ush2024',
+        branchId: 'ushuaia',
+        role: 'branch-admin',
+        displayName: 'Ushuaia'
+    },
+    {
+        username: 'puertomadryn',
+        password: 'pm2024',
+        branchId: 'puerto-madryn',
+        role: 'branch-admin',
+        displayName: 'Puerto Madryn'
+    },
+    {
+        username: 'nuevapalmira',
+        password: 'np2024',
+        branchId: 'nueva-palmira-uru',
+        role: 'branch-admin',
+        displayName: 'Nueva Palmira (URU)'
+    },
+    {
+        username: 'montevideo',
+        password: 'mvd2024',
+        branchId: 'montevideo-uru',
+        role: 'branch-admin',
+        displayName: 'Montevideo (URU)'
+    },
+    {
+        username: 'asuncion',
+        password: 'asu2024',
+        branchId: 'asuncion-par',
+        role: 'branch-admin',
+        displayName: 'Asunción (PAR)'
+    },
+    {
+        username: 'corumba',
+        password: 'cor2024',
+        branchId: 'corumba-bra',
+        role: 'branch-admin',
+        displayName: 'Corumba (BRA)'
+    },
+    {
+        username: 'quijarro',
+        password: 'qui2024',
+        branchId: 'quijarro-bol',
+        role: 'branch-admin',
+        displayName: 'Quijarro (BOL)'
     }
 ];
 
