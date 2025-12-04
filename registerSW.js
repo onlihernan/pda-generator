@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/pda-generator/sw.js', { scope: '/pda-generator/' })})}
